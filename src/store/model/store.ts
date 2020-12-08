@@ -64,6 +64,7 @@ export type Model =
 	| 'amp holo'
 	| 'aorus master'
 	| 'aorus xtreme'
+	| 'aorus xtreme waterforce'
 	| 'aorus'
 	| 'challenger'
 	| 'dual fan'
@@ -76,14 +77,18 @@ export type Model =
 	| 'ftw3'
 	| 'gamerock oc'
 	| 'gaming oc'
+	| 'gaming oc pro'
 	| 'gaming pro oc'
 	| 'gaming pro'
 	| 'gaming x trio'
 	| 'gaming x3'
+	| 'suprim x'
 	| 'gaming'
 	| 'ichill x2'
 	| 'ichill x3'
 	| 'ichill x4'
+	| 'ichill frostbite'
+	| 'ko'
 	| 'nitro+'
 	| 'nitro oc se'
 	| 'nitro oc'
@@ -121,6 +126,7 @@ export type Model =
 	| 'vision'
 	| 'xbox series s'
 	| 'xbox series x'
+	| 'xc gaming'
 	| 'xc3 black'
 	| 'xc3 ultra'
 	| 'xc3'
@@ -129,13 +135,15 @@ export type Model =
 
 export type Link = {
 	brand: Brand;
-	itemNumber?: string;
-	series: Series;
-	model: Model;
-	url: string;
 	cartUrl?: string;
+	itemNumber?: string;
+	labels?: Labels;
+	model: Model;
 	openCartAction?: (browser: Browser) => Promise<string>;
+	price?: number | null;
+	series: Series;
 	screenshot?: string;
+	url: string;
 };
 
 export type LabelQuery = Element[] | Element | string[];

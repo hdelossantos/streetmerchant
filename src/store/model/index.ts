@@ -21,6 +21,7 @@ import {Aria} from './aria';
 import {Arlt} from './arlt';
 import {Asus} from './asus';
 import {AsusDe} from './asus-de';
+import {Awd} from './awd';
 import {Azerty} from './azerty';
 import {BAndH} from './bandh';
 import {BestBuy} from './bestbuy';
@@ -52,6 +53,7 @@ import {Kabum} from './kabum';
 import {Lenovo} from './lenovo';
 import {Mediamarkt} from './mediamarkt';
 import {Medimax} from './medimax';
+import {Megekko} from './megekko';
 import {Meijer} from './meijer';
 import {MemoryExpress} from './memoryexpress';
 import {MicroCenter} from './microcenter';
@@ -82,6 +84,7 @@ import {Unieuro} from './unieuro';
 import {Very} from './very';
 import {VsGamers} from './vsgamers';
 import {Walmart} from './walmart';
+import {WalmartCa} from './walmart-ca';
 import {Wipoid} from './wipoid';
 import {Xbox} from './xbox';
 import {Zotac} from './zotac';
@@ -110,6 +113,7 @@ export const storeList = new Map([
 	[Arlt.name, Arlt],
 	[Asus.name, Asus],
 	[AsusDe.name, AsusDe],
+	[Awd.name, Awd],
 	[Azerty.name, Azerty],
 	[BAndH.name, BAndH],
 	[BestBuy.name, BestBuy],
@@ -141,6 +145,7 @@ export const storeList = new Map([
 	[Lenovo.name, Lenovo],
 	[Mediamarkt.name, Mediamarkt],
 	[Medimax.name, Medimax],
+	[Megekko.name, Megekko],
 	[Meijer.name, Meijer],
 	[MemoryExpress.name, MemoryExpress],
 	[MicroCenter.name, MicroCenter],
@@ -170,6 +175,7 @@ export const storeList = new Map([
 	[Very.name, Very],
 	[VsGamers.name, VsGamers],
 	[Walmart.name, Walmart],
+	[WalmartCa.name, WalmartCa],
 	[Wipoid.name, Wipoid],
 	[Xbox.name, Xbox],
 	[Zotac.name, Zotac]
@@ -212,7 +218,9 @@ function printConfig() {
 	}
 
 	if (config.store.showOnlyBrands.length > 0) {
-		logger.info(`ℹ selected brands: ${config.store.showOnlyBrands.join(', ')}`);
+		logger.info(
+			`ℹ selected brands: ${config.store.showOnlyBrands.join(', ')}`
+		);
 	}
 
 	if (config.store.showOnlyModels.length > 0) {
@@ -228,7 +236,9 @@ function printConfig() {
 	}
 
 	if (config.store.showOnlySeries.length > 0) {
-		logger.info(`ℹ selected series: ${config.store.showOnlySeries.join(', ')}`);
+		logger.info(
+			`ℹ selected series: ${config.store.showOnlySeries.join(', ')}`
+		);
 	}
 }
 
@@ -236,7 +246,8 @@ function warnIfStoreDeprecated(store: Store) {
 	switch (store.name) {
 		case 'nvidia':
 		case 'nvidia-api':
-			logger.warn(`${store.name} is deprecated in favor of bestbuy`);
+			if (config.store.country === 'usa')
+				logger.warn(`${store.name} is deprecated in favor of bestbuy`);
 			break;
 		case 'evga':
 			logger.warn(

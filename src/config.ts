@@ -180,7 +180,7 @@ const notifications = {
 	desktop: process.env.DESKTOP_NOTIFICATIONS === 'true',
 	discord: {
 		notifyGroup: envOrArray(process.env.DISCORD_NOTIFY_GROUP),
-		webHookUrl: envOrArray(process.env.DISCORD_WEB_HOOK)
+		webhooks: envOrArray(process.env.DISCORD_WEB_HOOK)
 	},
 	email: {
 		password: envOrString(process.env.EMAIL_PASSWORD),
@@ -232,7 +232,8 @@ const notifications = {
 			['tmobile', 'tmomail.net'],
 			['verizon', 'vtext.com'],
 			['virgin', 'vmobl.com'],
-			['virgin-ca', 'vmobile.ca']
+			['virgin-ca', 'vmobile.ca'],
+			['visible', 'vtext.com']
 		]),
 		carrier: envOrArray(process.env.PHONE_CARRIER),
 		number: envOrArray(process.env.PHONE_NUMBER)

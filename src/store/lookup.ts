@@ -1,7 +1,7 @@
 import {Browser, Page, PageEventObj, Request, Response} from 'puppeteer';
 import {Link, Store, getStores} from './model';
 import {Print, logger} from '../logger';
-import {Selector, cardPrice, pageIncludesLabels} from './includes-labels';
+import {Selector, getPrice, pageIncludesLabels} from './includes-labels';
 import {
 	closePage,
 	delay,
@@ -152,7 +152,8 @@ async function lookup(browser: Browser, store: Store) {
 
 		const proxy = nextProxy(store);
 
-		const useAdBlock = !config.browser.lowBandwidth && !store.disableAdBlocker;
+		const useAdBlock =
+			!config.browser.lowBandwidth && !store.disableAdBlocker;
 		const customContext = config.browser.isIncognito;
 
 		const context = customContext
@@ -212,9 +213,9 @@ async function lookup(browser: Browser, store: Store) {
 			statusCode = await lookupCard(browser, store, page, link);
 		} catch (error: unknown) {
 			logger.error(
-				`✖ [${store.name}] ${link.brand} ${link.series} ${link.model} - ${
-					(error as Error).message
-				}`
+				`✖ [${store.name}] ${link.brand} ${link.series} ${
+					link.model
+				} - ${(error as Error).message}`
 			);
 			const client = await page.target().createCDPSession();
 			await client.send('Network.clearBrowserCookies');
@@ -266,7 +267,9 @@ async function lookupCard(
 
 	if (await lookupCardInStock(store, page, link)) {
 		const givenUrl =
-			link.cartUrl && config.store.autoAddToCart ? link.cartUrl : link.url;
+			link.cartUrl && config.store.autoAddToCart
+				? link.cartUrl
+				: link.url;
 		logger.info(`${Print.inStock(link, store, true)}\n${givenUrl}`);
 
 		if (config.browser.open) {
@@ -303,6 +306,56 @@ async function lookupCardInStock(store: Store, page: Page, link: Link) {
 		type: 'textContent'
 	};
 
+	if (store.labels.captcha) {
+		if (await pageIncludesLabels(page, store.labels.captcha, baseOptions)) {
+			logger.warn(Print.captcha(link, store, true));
+			await delay(getSleepTime(store));
+			return false;
+		}
+	}
+
+	if (store.labels.bannedSeller) {
+		if (
+			await pageIncludesLabels(
+				page,
+				store.labels.bannedSeller,
+				baseOptions
+			)
+		) {
+			logger.warn(Print.bannedSeller(link, store, true));
+			return false;
+		}
+	}
+
+	if (store.labels.maxPrice) {
+		const maxPrice = config.store.maxPrice.series[link.series];
+
+		link.price = await getPrice(page, store.labels.maxPrice, baseOptions);
+
+		if (link.price && link.price > maxPrice && maxPrice > 0) {
+			logger.info(Print.maxPrice(link, store, maxPrice, true));
+			return false;
+		}
+	}
+
+	// Fixme: currently causing issues
+	// Do API inventory validation in realtime (no cache) if available
+	// if (
+	// 	store.realTimeInventoryLookup !== undefined &&
+	// 	link.itemNumber !== undefined
+	// ) {
+	// 	return store.realTimeInventoryLookup(link.itemNumber);
+	// }
+
+	if (store.labels.outOfStock) {
+		if (
+			await pageIncludesLabels(page, store.labels.outOfStock, baseOptions)
+		) {
+			logger.info(Print.outOfStock(link, store, true));
+			return false;
+		}
+	}
+
 	if (store.labels.inStock) {
 		const options = {
 			...baseOptions,
@@ -316,50 +369,17 @@ async function lookupCardInStock(store: Store, page: Page, link: Link) {
 		}
 	}
 
-	if (store.labels.outOfStock) {
-		if (await pageIncludesLabels(page, store.labels.outOfStock, baseOptions)) {
+	if (link.labels?.inStock) {
+		const options = {
+			...baseOptions,
+			requireVisible: true,
+			type: 'outerHTML' as const
+		};
+
+		if (!(await pageIncludesLabels(page, link.labels.inStock, options))) {
 			logger.info(Print.outOfStock(link, store, true));
 			return false;
 		}
-	}
-
-	if (store.labels.bannedSeller) {
-		if (
-			await pageIncludesLabels(page, store.labels.bannedSeller, baseOptions)
-		) {
-			logger.warn(Print.bannedSeller(link, store, true));
-			return false;
-		}
-	}
-
-	if (store.labels.maxPrice) {
-		const price = await cardPrice(
-			page,
-			store.labels.maxPrice,
-			config.store.maxPrice.series[link.series],
-			baseOptions
-		);
-		const maxPrice = config.store.maxPrice.series[link.series];
-		if (price) {
-			logger.info(Print.maxPrice(link, store, price, maxPrice, true));
-			return false;
-		}
-	}
-
-	if (store.labels.captcha) {
-		if (await pageIncludesLabels(page, store.labels.captcha, baseOptions)) {
-			logger.warn(Print.captcha(link, store, true));
-			await delay(getSleepTime(store));
-			return false;
-		}
-	}
-
-	// Do API inventory validation in realtime (no cache) if available
-	if (
-		store.realTimeInventoryLookup !== undefined &&
-		link.itemNumber !== undefined
-	) {
-		return store.realTimeInventoryLookup(link.itemNumber);
 	}
 
 	return true;
@@ -367,7 +387,9 @@ async function lookupCardInStock(store: Store, page: Page, link: Link) {
 
 export async function tryLookupAndLoop(browser: Browser, store: Store) {
 	if (!browser.isConnected()) {
-		logger.debug(`[${store.name}] Ending this loop as browser is disposed...`);
+		logger.debug(
+			`[${store.name}] Ending this loop as browser is disposed...`
+		);
 		return;
 	}
 
