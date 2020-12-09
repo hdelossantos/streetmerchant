@@ -80,6 +80,7 @@ import {Spielegrotte} from './spielegrotte';
 import {Store} from './store';
 import {Target} from './target';
 import {TopAchat} from './topachat';
+import {ToysRUs} from './toysrus';
 import {Unieuro} from './unieuro';
 import {Very} from './very';
 import {VsGamers} from './vsgamers';
@@ -171,6 +172,7 @@ export const storeList = new Map([
 	[Spielegrotte.name, Spielegrotte],
 	[Target.name, Target],
 	[TopAchat.name, TopAchat],
+	[ToysRUs.name, ToysRUs],
 	[Unieuro.name, Unieuro],
 	[Very.name, Very],
 	[VsGamers.name, VsGamers],
