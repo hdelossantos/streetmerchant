@@ -399,6 +399,7 @@ export const BestBuy: Store = {
 		},
 		{
 			brand: 'microsoft',
+			cartUrl: 'https://api.bestbuy.com/click/-/6428324/cart',
 			model: 'xbox series x',
 			series: 'xboxsx',
 			url:
@@ -406,6 +407,7 @@ export const BestBuy: Store = {
 		},
 		{
 			brand: 'microsoft',
+			cartUrl: 'https://api.bestbuy.com/click/-/6430277/cart',
 			model: 'xbox series s',
 			series: 'xboxss',
 			url:
