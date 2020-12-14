@@ -1,6 +1,7 @@
 import {Store} from './store';
 
 export const SamcClub: Store = {
+	currency: '$',
 	labels: {
 		inStock: {
 			container: '.sc-pc-add-to-cart span',

@@ -1,6 +1,7 @@
 import {Store} from './store';
 
 export const Meijer: Store = {
+	currency: '$',
 	labels: {
 		inStock: {
 			container: '.js-add-to-cart.btn-icon',
