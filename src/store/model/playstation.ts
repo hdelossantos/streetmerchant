@@ -2,6 +2,7 @@ import {Store} from './store';
 import fetch from 'node-fetch';
 
 export const PlayStation: Store = {
+	currency: '$',
 	labels: {
 		inStock: [
 			{
@@ -9,8 +10,8 @@ export const PlayStation: Store = {
 				text: ['Add']
 			},
 			{
-				container: '.bulleted-info.queue h4',
-				text: ['When you reach the front of the queue:']
+				container: '.bulleted-info.queue',
+				text: ['queue']
 			}
 		],
 		outOfStock: {
