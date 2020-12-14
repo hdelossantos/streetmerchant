@@ -169,7 +169,8 @@ const browser = {
 		process.env.PAGE_SLEEP_MAX,
 		5000
 	),
-	open: envOrBoolean(process.env.OPEN_BROWSER)
+	open: envOrBoolean(process.env.OPEN_BROWSER),
+	remoteBrowser: envOrString(process.env.REMOTE_BROWSER, undefined)
 };
 
 const docker = envOrBoolean(process.env.DOCKER);

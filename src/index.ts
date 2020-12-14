@@ -39,14 +39,19 @@ async function main() {
 
 	await stop();
 
-	browser = await puppeteer.launch({
-		args,
-		defaultViewport: {
-			height: config.page.height,
-			width: config.page.width
-		},
-		headless: config.browser.isHeadless
-	});
+	browser = await (config.browser.remoteBrowser &&
+	config.browser.remoteBrowser !== ''
+		? puppeteer.connect({
+				browserWSEndpoint: config.browser.remoteBrowser
+		  })
+		: puppeteer.launch({
+				args,
+				defaultViewport: {
+					height: config.page.height,
+					width: config.page.width
+				},
+				headless: config.browser.isHeadless
+		  }));
 
 	for (const store of storeList.values()) {
 		logger.debug('store links', {meta: {links: store.links}});
@@ -67,7 +72,10 @@ async function stop() {
 		// Use temporary swap variable to avoid any race condition
 		const browserTemporary = browser;
 		browser = undefined;
-		await browserTemporary.close();
+
+		await (config.browser.remoteBrowser
+			? browserTemporary.disconnect()
+			: browserTemporary.close());
 	}
 }
 

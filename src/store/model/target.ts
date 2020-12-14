@@ -18,6 +18,14 @@ export const Target: Store = {
 	},
 	links: [
 		{
+			brand: 'test:brand',
+			itemNumber: '81114477',
+			model: 'test:model',
+			series: 'test:series',
+			url:
+				'https://www.target.com/p/dualsense-wireless-controller-for-playstation-5/-/A-81114477'
+		},
+		{
 			brand: 'sony',
 			model: 'ps5 console',
 			series: 'sonyps5c',
