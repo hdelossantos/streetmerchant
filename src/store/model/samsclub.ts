@@ -7,11 +7,12 @@ export const SamcClub: Store = {
 			container: '.sc-pc-add-to-cart span',
 			text: ['Add to Cart']
 		},
-		outOfStock: {
-			container:
-				'.sc-pc-large-desktop-oos-card-price .sc-pc-large-desktop-oos-card-out-of-stock-text',
-			text: ['Ship this item', 'Pick up in club']
-		}
+		outOfStock: [
+			{
+				container: '.sc-pc-stock-labels-full',
+				text: ['Not available for purchase at this time']
+			}
+		]
 	},
 	links: [
 		{
