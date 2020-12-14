@@ -1,6 +1,7 @@
 import {Store} from './store';
 
 export const Lenovo: Store = {
+	currency: '$',
 	labels: {
 		inStock: {
 			container: '#addToCart',
